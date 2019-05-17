@@ -64,12 +64,28 @@ test_names = list(test_names)
 src = "lfw2/"
 train_dir = "data/train/"
 test_dir = "data/test/"
+unused_dir = "data/unused/"
 
-for name in train_names:
-  print("Moving " + name + "...")
-  shutil.move(src + name, train_dir + name)
+#for name in train_names:
+#  print("Moving " + name + "...")
+#  shutil.move(src + name, train_dir + name)
+#
+#for name in test_names:
+#  print("Moving " + name + "...")
+#  shutil.move(src + name, test_dir + name)
 
-for name in test_names:
-  print("Moving " + name + "...")
-  shutil.move(src + name, test_dir + name)
-  
+import os
+
+train_dst = 'flatten/train/'
+test_dst = 'flatten/test/'
+unused_dst = 'flatten/unused/'
+
+def flatten(src, dst):
+    for d in os.listdir(src):
+        for f in os.listdir(src + d):
+            print("Moving " + f + "...")
+            shutil.move(src + d + '/' + f, dst + f)
+
+#flatten(train_dir, train_dst)
+#flatten(test_dir, test_dst)
+flatten(unused_dir, unused_dst)
