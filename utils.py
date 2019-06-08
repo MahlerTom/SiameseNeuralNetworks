@@ -1,4 +1,5 @@
 from .data import image_name
+
 import numpy as np
 from string import ascii_uppercase
 from prettytable import PrettyTable
