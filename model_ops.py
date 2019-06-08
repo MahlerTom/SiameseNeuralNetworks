@@ -13,6 +13,8 @@ from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.regularizers import l2
 from skimage.transform import resize
 from skimage import io
+from tensorflow.random import set_seed
+from numpy.random import seed
 
 def model_fit(    
     train_paths_labels,
@@ -185,3 +187,64 @@ def model_predict(
     
     plt.show()
     return pred
+
+def model_fit_eval(    
+    train_paths_labels,
+    val_paths_labels,
+    test_paths_labels,
+    eval_table=None,
+    table=None,
+    _resize=[250, 250],
+    norm=255.0,
+    batch_size=128,
+    filters=4,
+    lr=1e-3,
+    epochs=30,
+    verbose=1, 
+    pretrained_weights=None,
+    model_path=None,
+    distance=absolute_distance,
+    distance_output_shape=None,
+    prediction_activation='sigmoid',
+    train_ds=None,
+    val_ds=None,
+    callbacks=None,
+    steps_per_epoch=None,
+    validation_steps=None,
+    prefix='',
+#     shuffle=True,
+    patience=3,
+    kernel_initializer=initialize_weights,
+    kernel_initializer_d=initialize_weights_dense,
+    kernel_regularizer=l2(2e-4),
+    kernel_regularizer_d=l2(1e-3),
+    bias_initializer=initialize_bias,
+    kernel_size_list=[(10, 10), (7, 7), (4, 4), (4, 4)],
+    units=4*64,
+    optimizer=None,
+    loss='binary_crossentropy',
+    metrics=['accuracy', Precision(name='Precision'), Recall(name='Recall')],
+    tensorboard_histogram_freq=1,
+    random_seed=2,
+):
+    seed(random_seed)
+    set_seed(random_seed)
+    model, _ = model_fit(table=table, train_paths_labels=train_paths_labels,
+                            val_paths_labels=val_paths_labels, _resize=_resize, norm=norm,
+                            batch_size=batch_size, filters=filters, lr=lr, epochs=epochs,
+                            loss=loss, metrics=metrics, verbose=verbose,
+                            pretrained_weights=pretrained_weights, model_path=model_path,
+                            prediction_activation=prediction_activation, 
+                            distance=distance, distance_output_shape=distance_output_shape,
+                            train_ds=train_ds, val_ds=val_ds, callbacks=callbacks,
+                            steps_per_epoch=steps_per_epoch, validation_steps=validation_steps,
+                            prefix=prefix, patience=patience, tensorboard_histogram_freq=tensorboard_histogram_freq,
+                        )
+    scores = model_evaluate(model, images_labels_paths=test_paths_labels, norm=norm, _resize=_resize, verbose=verbose)
+    if eval_table is not None:
+        eval_table.add_row(scores)
+        print(eval_table)
+    else:
+        print(scores)
+
+    return model
