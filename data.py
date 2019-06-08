@@ -45,4 +45,18 @@ def load_data(data_path, labels_file, print_imgs=3):
 
 # Utility function to print the name of the image easily (tested on Google Colab)
 def image_name(path):
-  return path.split('/')[-1][:-4]
+    return path.split('/')[-1][:-4]
+
+def split_train_val_paths(paths_labels, letters):
+    train = list()
+    val = list()  
+    for p in paths_labels:
+        left_name = image_name(p[0])
+        train_append = True
+        for l in letters:
+            if left_name.startswith(l):
+                train_append = False
+                break;
+        (train if train_append else val).append(p)
+
+    return train, val
