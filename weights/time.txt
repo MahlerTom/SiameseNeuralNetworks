@@ -1,0 +1,4 @@
+default_parameters_0608-115631_lr0.001_f4_s250_e200_b128 = 252.33 seconds
+default_resize_125_0608-120311_lr0.001_f4_s125_e200_b128 = 201.58 seconds
+resize_125_0608-120818_lr0.001_f4_s125_e200_b32 = 65.72 seconds
+resize_125_0608-120935_lr0.001_f4_s125_e200_b4 = 104.83 seconds
