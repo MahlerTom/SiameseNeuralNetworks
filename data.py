@@ -2,8 +2,38 @@ from .preprocess import load_and_preprocess_from_path_label, load_and_preprocess
 
 import os
 import random
+import shutil
 import IPython.display as display
 import tensorflow as tf
+
+def create_pairs(pairs_path):
+  names = set()
+  with open(pairs_path) as pairs_path_f:
+    pairs_list = pairs_path_f.readlines()[1:]
+        
+  for pair in pairs_list:
+    pair = pair[:-1].split('\t')
+    if len(pair) == 3:
+      names.add(pair[0])
+    elif len(pair) == 4:
+      names.add(pair[0])
+      names.add(pair[2])
+  return list(names)
+
+def flatten(src, verbose=0):
+  for directory in os.listdir(src):
+    for file in os.listdir(src + directory):
+      if verbose > 0:
+        print("Moving " + file + "...")
+      shutil.move(src + directory + '/' + file, src + file)   
+
+def move_dirs_and_flatten(src_path, dst_path, folders_names, verbose=0):
+  for folder_name in folders_names:
+    if verbose > 0:
+      print("Moving " + folder_name + "...")
+    shutil.move(src_path + folder_name, dst_path + folder_name)
+  
+  flatten(dst_path)
 
 def load_data(data_path, labels_file, print_imgs=3):
   import pathlib
